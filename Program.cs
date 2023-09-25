@@ -1,8 +1,15 @@
+using Microsoft.EntityFrameworkCore;
+using Samir_AP1_P1.DAL;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+var ConStr = builder.Configuration.GetConnectionString("ConStr");
+
+builder.Services.AddDbContext<Context>(options =>
+    options.UseSqlite(ConStr));
 
 var app = builder.Build();
 
