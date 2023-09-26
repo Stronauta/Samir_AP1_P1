@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Samir_AP1_P1.DAL;
+using Radzen;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +12,8 @@ var ConStr = builder.Configuration.GetConnectionString("ConStr");
 
 builder.Services.AddDbContext<Context>(options =>
     options.UseSqlite(ConStr));
+
+builder.Services.AddScoped<NotificationService>();
 
 var app = builder.Build();
 

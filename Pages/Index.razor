@@ -1,4 +1,5 @@
 ﻿@page "/"
+@inject NotificationService notificationservice
 
 <PageTitle>Index</PageTitle>
 
@@ -7,3 +8,18 @@
 <h3>Programaci&oacute;n Aplicada 1 2023-03</h3>
 
 
+<button @onclick="MostrarNotif"> PruebaNoti</button>
+
+@code{
+
+	public void MostrarNotif()
+	{
+		var mensaje = new NotificationMessage {
+				Severity = NotificationSeverity.Error,
+				Summary = "Notificacion EjemploMarca Acme",
+				Detail = "Esta es una prueba de notificacion service",
+				Duration = 6_000
+			};
+		notificationservice.Notify(mensaje);
+	}
+}
