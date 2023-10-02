@@ -11,6 +11,7 @@ namespace Samir_AP1_P1.Models
 		[Required]
 		public DateTime Fecha { get; set; } = DateTime.Now;
 		[Required(ErrorMessage = "Es obligatorio introducir el nombre de la persona")]
+		[RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "El nombre solo puede contener letras y espacios.")]
 		public string Persona { get; set; }
 		public string? Descripcion { get; set; }
 		[Required]

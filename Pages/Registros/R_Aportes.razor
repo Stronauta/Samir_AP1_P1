@@ -14,7 +14,43 @@
 <EditForm Model="Aportes" OnInvalidSubmit="Guardar">
 	<DataAnnotationsValidator />
 
+	<div class="row">
+		<div class="col-md-6">
+			<label for="AporteID">ID</label>
+			<div >
+				<InputNumber id="AporteID" min="0" @bind-Value="Aportes.AporteID" />
+				<button class="btn btn-primary" @onclick="Buscar" type="button">
+					<i class="oi oi-magnifying-glass" />
+				</button>
+			</div>
+		</div>
 
+		<div class="col-md-6">
+			<div class="form-group">
+				<label>Fecha:</label>
+				<InputDate @bind-Value="Aportes.Fecha" class="form-control" required />
+			</div>
+		</div>
+	</div>
+
+	<div class="for-group">
+		<label>Persona:</label>
+		<InputText @bind-Value="Aportes.Persona" class="form-control" placeholder="Ingrese el nombre" required />
+	</div>
+
+	<div>
+		<label>Descripcion:</label>
+		<InputTextArea @bind-Value="Aportes.Descripcion" class="form-control" required />
+	</div>
+
+	<div>
+		<label>Monto</label>
+		<InputNumber min="1" max="10000000" @bind-Value="Aportes.Monto" class="form-control" required />
+	</div>
+
+	<button type="submit" class="btn btn-secundary" @onclick="Nuevo" >Nuevo</button>
+	<button type="submit" class="btn btn-primary" @onclick="Guardar" ><i class="oi oi-check"/>Guardar</button>
+	<button type="submit" class="btn btn-danger" @onclick="Eliminar"> <i class="oi oi-trash"/> Eliminar </button>
 </EditForm>
 
 @code {
@@ -49,6 +85,13 @@
 
 	public void Nuevo()
 	{
+		var NotiNuevo = new NotificationMessage{
+					Severity = NotificationSeverity.Info,
+					Summary = "Nuevo",
+					Detail = "Registro Nuevo",
+					Duration = 4_000
+			};
+		NotiService.Notify(NotiNuevo);
 		this.Aportes = new Aportes();
 	}
 
@@ -96,6 +139,7 @@
 					Detail = "Registro Eliminado con Exito",
 					Duration = 4_000
 			};
+			NotiService.Notify(NotiEliminar);
 		}
 		else
 		{
