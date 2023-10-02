@@ -1,9 +1,51 @@
-﻿@page "/C_Aportes"
-@page "/C_Aportes/{AporteID:int}"
+﻿@page "/R_Aportes"
+@page "/R_Aportes/{AporteID:int}"
+@inject AportesBLL aportesbll
+@using Samir_AP1_P1.DAL;
+@using Samir_AP1_P1.Models;
+@using Samir_AP1_P1.BLL;
 
-<h3>Registro de Reportes</h3>
+
+<div class="card-header">
+	<h3>Registro de Reportes</h3>
+</div>
+
+<EditForm Model="Aportes">
+
+</EditForm>
 
 @code {
 	[Parameter]
 	public int AporteID { get; set; }
+
+	public Aportes Aportes { get; set; } = new Aportes();
+
+	public void Buscar()
+	{
+		var AporteEncontrado = aportesbll.Buscar(Aportes.AporteID);
+		if (AporteEncontrado != null)
+		{
+			this.Aportes = AporteEncontrado;
+		}
+		else
+		{
+			this.Aportes = new Aportes();
+		}
+
+	}
+
+	protected override void OnInitialized()
+	{
+		if (AporteID > 0)
+		{
+			this.Aportes.AporteID = AporteID;
+			this.Buscar();
+		}
+
+	}
+
+	public void Nuevo()
+	{
+		this.Aportes = new Aportes();
+	}
 }
