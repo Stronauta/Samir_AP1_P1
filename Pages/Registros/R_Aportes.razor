@@ -1,6 +1,7 @@
 ﻿@page "/R_Aportes"
 @page "/R_Aportes/{AporteID:int}"
 @inject AportesBLL aportesbll
+@inject NotificationService NotiService
 @using Samir_AP1_P1.DAL;
 @using Samir_AP1_P1.Models;
 @using Samir_AP1_P1.BLL;
@@ -10,7 +11,9 @@
 	<h3>Registro de Reportes</h3>
 </div>
 
-<EditForm Model="Aportes">
+<EditForm Model="Aportes" OnInvalidSubmit="Guardar">
+	<DataAnnotationsValidator />
+
 
 </EditForm>
 
@@ -47,5 +50,62 @@
 	public void Nuevo()
 	{
 		this.Aportes = new Aportes();
+	}
+
+	public bool Validar()
+	{
+		if(Aportes.AporteID < 0)
+		{
+			return false;
+		}
+		return true;
+	}
+
+	public void Guardar()
+	{
+		if (!Validar())
+		{
+			var NotiGuardar = new NotificationMessage{
+					Severity = NotificationSeverity.Success,
+					Summary = "Registrado",
+					Detail = "Registro Guardado con Exito",
+					Duration = 4_000
+			};
+			this.Aportes = new Aportes();
+			NotiService.Notify(NotiGuardar);
+		}
+		else
+		{
+			var NotiGuardar = new NotificationMessage{
+					Severity = NotificationSeverity.Error,
+					Summary = "Error",
+					Detail = "Registro No Guardado",
+					Duration = 4_000
+			};
+			NotiService.Notify(NotiGuardar);
+		}
+	}
+
+	public void Eliminar()
+	{
+		if (aportesbll.Eliminar(Aportes))
+		{
+			var NotiEliminar = new NotificationMessage{
+					Severity = NotificationSeverity.Success,
+					Summary = "Eliminado",
+					Detail = "Registro Eliminado con Exito",
+					Duration = 4_000
+			};
+		}
+		else
+		{
+			var NotiEliminar = new NotificationMessage{
+					Severity = NotificationSeverity.Error,
+					Summary = "Error",
+					Detail = "Registro No Eliminado",
+					Duration = 4_000
+			};
+			NotiService.Notify(NotiEliminar);
+		}
 	}
 }
