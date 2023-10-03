@@ -112,26 +112,30 @@
 
 	public void Guardar()
 	{
-		if (!Validar())
+		if (Validar())
 		{
-			var NotiGuardar = new NotificationMessage{
-					Severity = NotificationSeverity.Success,
-					Summary = "Registrado",
-					Detail = "Registro Guardado con Exito",
-					Duration = 4_000
-			};
-			this.Aportes = new Aportes();
-			NotiService.Notify(NotiGuardar);
-		}
-		else
-		{
-			var NotiGuardar = new NotificationMessage{
+			var mensaje = new NotificationMessage
+				{
 					Severity = NotificationSeverity.Error,
 					Summary = "Error",
-					Detail = "Registro No Guardado",
+					Detail = "Revise los campos",
 					Duration = 4_000
-			};
-			NotiService.Notify(NotiGuardar);
+				};
+			NotiService.Notify(mensaje);
+			return;
+		}
+		var guardo = aportesbll.Guardar(this.Aportes);
+		if (guardo)
+		{
+			var mensaje = new NotificationMessage
+				{
+					Severity = NotificationSeverity.Success,
+					Summary = "Validacion",
+					Detail = "Aporte Guardado correctamente",
+					Duration = 4_000
+				};
+			NotiService.Notify(mensaje);
+			this.Nuevo();
 		}
 	}
 

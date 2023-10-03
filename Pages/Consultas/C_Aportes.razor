@@ -54,7 +54,7 @@
 					<th>Persona</th>
 					<th>Descripcion</th>
 					<th>Monto</th>
-					<th>Ver</th>
+
 				</tr>
 			</thead>
 			<tbody>
@@ -66,8 +66,16 @@
 						<td>@item.Persona</td>
 						<td>@item.Descripcion</td>
 						<td>@item.Monto</td>
+						<td><a href="R_Aportes/@item.AporteID">Ver</a></td>
 					</tr>
 				}
+				<tr>
+					<td>Conteo = @Contal</td>
+					<td></td>
+					<td></td>
+					<td class="text-end">Monto Total =</td>
+					<td> @MontoTotal</td>
+				</tr>
 			</tbody>
 		</table>
 	</div>
@@ -83,7 +91,8 @@
 	[Parameter]
 	public int AporteID { get; set; }
 
-	public float MontoTotal { get; set; }
+	public int Contal { get; set; }
+	public decimal MontoTotal { get; set; }
 	public int Filtral { get; set; }
 
 	public DateTime Hasta { get; set; }
@@ -96,8 +105,9 @@
 		Desde = DateTime.Now.AddMonths(-1); 
 
 		Aportes = aportesbll.GetList(i => i.Fecha >= Desde.Date && i.Fecha <= Hasta);
-
+		Contal = Aportes.Count();
 		aportes = new Aportes();
+		MontoTotal = Aportes.Sum(aporte => aporte.Monto);
 	}
 
 	public void Buscar()
@@ -118,5 +128,6 @@
 				break;
 		}
 		ListaAportes = aportesbll.GetList(filtro);
+
 	}
 }

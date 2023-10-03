@@ -34,6 +34,8 @@ namespace Samir_AP1_P1.BLL
 
 		public bool Eliminar(Aportes aportes)
 		{
+			var p = _contexto.Aportes.Find(aportes.AporteID);
+			_contexto.Entry(p!).State = EntityState.Detached;
 			_contexto.Entry(aportes).State = EntityState.Deleted;
 			return _contexto.SaveChanges() > 0;
 		}
