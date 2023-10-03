@@ -8,7 +8,7 @@
 
 
 <div class="card-header">
-	<h3>Registro de Reportes</h3>
+	<h3>Registro de Aportes</h3>
 </div>
 
 <EditForm Model="Aportes" OnInvalidSubmit="Guardar">
@@ -48,8 +48,8 @@
 		<InputNumber min="1" max="10000000" @bind-Value="Aportes.Monto" class="form-control" required />
 	</div>
 
-	<button type="submit" class="btn btn-secundary" @onclick="Nuevo" >Nuevo</button>
-	<button type="submit" class="btn btn-primary" @onclick="Guardar" ><i class="oi oi-check"/>Guardar</button>
+	<button type="submit" class="btn btn-secundary" @onclick="Nuevo"><i class="oi oi-file" />Nuevo</button>
+	<button type="submit" class="btn btn-primary" @onclick="Guardar"><i class="oi oi-document" />Guardar</button>
 	<button type="submit" class="btn btn-danger" @onclick="Eliminar"> <i class="oi oi-trash"/> Eliminar </button>
 </EditForm>
 
@@ -97,23 +97,17 @@
 
 	public void Nuevo()
 	{
-		var NotiNuevo = new NotificationMessage{
-					Severity = NotificationSeverity.Info,
-					Summary = "Nuevo",
-					Detail = "Registro Nuevo",
-					Duration = 4_000
-			};
-		NotiService.Notify(NotiNuevo);
 		this.Aportes = new Aportes();
 	}
 
 	public bool Validar()
 	{
-		if(Aportes.AporteID < 0)
-		{
-			return false;
-		}
-		return true;
+		if (string.IsNullOrEmpty(Aportes.Descripcion)) return true;
+		if (Aportes.AporteID < 0) return true;
+		if (Aportes.Monto <= 0) return true;
+		if (string.IsNullOrEmpty(Aportes.Persona)) return true;
+
+		return false;
 	}
 
 	public void Guardar()
@@ -162,6 +156,8 @@
 					Duration = 4_000
 			};
 			NotiService.Notify(NotiEliminar);
+			
 		}
+		Nuevo();
 	}
 }

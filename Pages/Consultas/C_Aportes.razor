@@ -1,92 +1,122 @@
 ﻿@page "/C_Aportes"
 @inject AportesBLL aportesbll
+@using System.Linq.Expressions;
 @using Samir_AP1_P1.Models;
 
 <div class="card-header">
-	<h3>Consultas de Reportes</h3>
+	<h3>Consultas de Aportes</h3>
 </div>
 
 <div class="row">
 	<div class="col-md-3">
-		<label >Desde:</label>
+		<label>Desde:</label>
 		<input class="form-control" type="date" @bind="Desde" />
 	</div>
 
 	<div class="col-md-3">
-		<label >Hasta:</label>
+		<label>Hasta:</label>
 		<input class="form-control" type="date" @bind="Hasta" />
 	</div>
 </div>
 
-<div>
-	<br />
-	<label>Campos para Consultar</label>
-	<div class="btn-group">
-		<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-			<i class="oi oi-magnifying-glass"></i> Filtrar
-		</button>
-		<div class="dropdown-menu">
-			<NavLink class="dropdown-item" href="ConsultaPersona">Persona</NavLink>
-			<NavLink class="dropdown-item" href="ConsultaAporteID">AporteID</NavLink>
-		</div>
+<label for="filtro">Seleccionar filtro:</label>
+<div class="col-md-6 input-group filter-input">
+	<InputSelect @bind-Value="Filtral" class="form-select">
+		<option value="0">Fecha</option>
+		<option value="1">Aporte Id</option>
+		<option value="2">Persona</option>
+	</InputSelect>
+	<div class="input-group-append">
+		<button type="button" class="btn btn-primary oi oi-magnifying-glass" @onclick="Buscar"></button>
 	</div>
 </div>
-<br />
+
+@if (Filtral == 1)
+{
+	<label for="aporteId">Aporte ID:</label>
+	<input type="number" @bind="aportes.AporteID" class="form-control" id="aporteId" />
+}
+@if (Filtral == 2)
+{
+	<label for="persona">Persona:</label>
+	<input type="text" @bind="aportes.Persona" class="form-control" id="persona" />
+}
 
 
-<div>
-<table class="table table-bordered table-striped">
-		<thead>
-			<tr>
-				<th>ID</th>
-				<th>Fecha</th>
-				<th>Persona</th>
-				<th>Descripcion</th>
-				<th>Monto</th>
-			</tr>
-		</thead>
-		<tbody>
-			@foreach (var item in Aportes)
-			{
+@if(Aportes != null)
+{
+	<div>
+		<table class="table table-bordered table-striped">
+			<thead>
 				<tr>
-					<td>@item.AporteID</td>
-					<td>@item.Fecha</td>
-					<td>@item.Persona</td>
-					<td>@item.Descripcion</td>
-					<td>@item.Monto</td>
+					<th>ID</th>
+					<th>Fecha</th>
+					<th>Persona</th>
+					<th>Descripcion</th>
+					<th>Monto</th>
+					<th>Ver</th>
 				</tr>
-			}
-		</tbody>
-	</table>
-</div>
+			</thead>
+			<tbody>
+				@foreach (var item in Aportes)
+				{
+					<tr>
+						<td>@item.AporteID</td>
+						<td>@item.Fecha</td>
+						<td>@item.Persona</td>
+						<td>@item.Descripcion</td>
+						<td>@item.Monto</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+}
 
 
 @code {
 
 	public List<Aportes> Aportes  = new List<Aportes>();
+	public List<Aportes> ListaAportes = new List<Aportes>();
+	public Aportes aportes { get; set; }  
 
 	[Parameter]
 	public int AporteID { get; set; }
+
+	public float MontoTotal { get; set; }
+	public int Filtral { get; set; }
 
 	public DateTime Hasta { get; set; }
 	public DateTime Desde { get; set; }
 
 	protected override void OnInitialized()
 	{
-		Aportes = aportesbll.GetList(i => true && i.Fecha >= Desde.Date && i.Fecha <= Hasta);
-		Hasta = DateTime.Now.AddMonths(-1);
-		Desde = DateTime.Now;
+		
+		Hasta = DateTime.Now;
+		Desde = DateTime.Now.AddMonths(-1); 
+
+		Aportes = aportesbll.GetList(i => i.Fecha >= Desde.Date && i.Fecha <= Hasta);
+
+		aportes = new Aportes();
 	}
 
 	public void Buscar()
 	{
-		var NotiBuscar = new NotificationMessage
-			{
-				Severity = NotificationSeverity.Info,
-				Summary = "Buscado",
-				Detail = "Registro Encontrado",
-				Duration = 4_000
-			};
-		Aportes = aportesbll.GetList(i => true && i.Fecha >= Desde.Date && i.Fecha <= Hasta);
+		Expression<Func<Aportes, bool>> filtro = l => l.Fecha >= Desde.Date && l.Fecha <= Hasta;
+
+		switch (Filtral)
+		{
+			case 1: 
+				filtro = l => l.AporteID == aportes.AporteID && l.Fecha >= Desde.Date && l.Fecha <= Hasta;
+				break;
+
+			case 2: 
+				filtro = l => l.Persona == aportes.Persona && l.Fecha >= Desde.Date && l.Fecha <= Hasta;
+				break;
+
+			default: 
+				break;
+		}
+		ListaAportes = aportesbll.GetList(filtro);
 	}
 }
