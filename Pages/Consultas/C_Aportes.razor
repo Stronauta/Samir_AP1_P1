@@ -1,10 +1,39 @@
 ﻿@page "/C_Aportes"
+@inject AportesBLL aportesbll
+@using Samir_AP1_P1.Models;
 
 <div class="card-header">
 	<h3>Consultas de Reportes</h3>
 </div>
 
+<div class="row">
+	<div class="col-md-3">
+		<label >Desde:</label>
+		<input class="form-control" type="date" @bind="Desde" />
+	</div>
+
+	<div class="col-md-3">
+		<label >Hasta:</label>
+		<input class="form-control" type="date" @bind="Hasta" />
+	</div>
+</div>
+
+
 
 @code {
 
+	public List<Aportes> Aportes  = new List<Aportes>();
+
+	[Parameter]
+	public int AporteID { get; set; }
+
+	public DateTime Hasta { get; set; }
+	public DateTime Desde { get; set; }
+
+	protected override void OnInitialized()
+	{
+		Aportes = aportesbll.GetList(i => true && i.Fecha >= Desde.Date && i.Fecha <= Hasta);
+		Hasta = DateTime.Now.AddMonths(-1);
+		Desde = DateTime.Now;
+	}
 }

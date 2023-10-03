@@ -64,10 +64,22 @@
 		var AporteEncontrado = aportesbll.Buscar(Aportes.AporteID);
 		if (AporteEncontrado != null)
 		{
+			var NotiBuscar = new NotificationMessage{
+					Severity = NotificationSeverity.Info,
+					Summary = "Buscado",
+					Detail = "Registro Encontrado",
+					Duration = 4_000
+			};
 			this.Aportes = AporteEncontrado;
 		}
 		else
 		{
+			var NotiBuscar = new NotificationMessage{
+					Severity = NotificationSeverity.Error,
+					Summary = "Error",
+					Detail = "Registro No Encontrado",
+					Duration = 4_000
+			};
 			this.Aportes = new Aportes();
 		}
 
