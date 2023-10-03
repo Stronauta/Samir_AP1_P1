@@ -18,6 +18,47 @@
 	</div>
 </div>
 
+<div>
+	<br />
+	<label>Campos para Consultar</label>
+	<div class="btn-group">
+		<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			<i class="oi oi-magnifying-glass"></i> Filtrar
+		</button>
+		<div class="dropdown-menu">
+			<NavLink class="dropdown-item" href="ConsultaPersona">Persona</NavLink>
+			<NavLink class="dropdown-item" href="ConsultaAporteID">AporteID</NavLink>
+		</div>
+	</div>
+</div>
+<br />
+
+
+<div>
+<table class="table table-bordered table-striped">
+		<thead>
+			<tr>
+				<th>ID</th>
+				<th>Fecha</th>
+				<th>Persona</th>
+				<th>Descripcion</th>
+				<th>Monto</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var item in Aportes)
+			{
+				<tr>
+					<td>@item.AporteID</td>
+					<td>@item.Fecha</td>
+					<td>@item.Persona</td>
+					<td>@item.Descripcion</td>
+					<td>@item.Monto</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+</div>
 
 
 @code {
@@ -35,5 +76,17 @@
 		Aportes = aportesbll.GetList(i => true && i.Fecha >= Desde.Date && i.Fecha <= Hasta);
 		Hasta = DateTime.Now.AddMonths(-1);
 		Desde = DateTime.Now;
+	}
+
+	public void Buscar()
+	{
+		var NotiBuscar = new NotificationMessage
+			{
+				Severity = NotificationSeverity.Info,
+				Summary = "Buscado",
+				Detail = "Registro Encontrado",
+				Duration = 4_000
+			};
+		Aportes = aportesbll.GetList(i => true && i.Fecha >= Desde.Date && i.Fecha <= Hasta);
 	}
 }
