@@ -28,6 +28,8 @@ namespace Samir_AP1_P1.BLL
 
 		public bool Modificar(Aportes aportes)
 		{
+			var p = _contexto.Aportes.Find(aportes.AporteID);
+			_contexto.Entry(p!).State = EntityState.Detached; //Arreglado el bug
 			_contexto.Entry(aportes).State = EntityState.Modified;
 			return _contexto.SaveChanges() > 0;
 		}
